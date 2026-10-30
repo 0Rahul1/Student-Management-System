@@ -1,0 +1,14 @@
+{
+  "name": "student-management-system",
+  "version": "1.0.0",
+  "description": "Student Management System in C++ & MongoDB with Live Web Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:cpp": "cmake -B build -S . -G \"MinGW Makefiles\" && cmake --build build",
+    "run:cpp": ".\\build\\StudentManagementSystem.exe"
+  },
+  "keywords": ["cpp", "mongodb", "oop", "college-project", "student-management"],
+  "author": "Sneha",
+  "license": "MIT"
+}

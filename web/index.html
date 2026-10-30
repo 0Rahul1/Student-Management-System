@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - Live Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121826;
+            --bg-card: rgba(26, 34, 53, 0.7);
+            --bg-card-hover: rgba(35, 46, 72, 0.85);
+            --accent-primary: #4f46e5;
+            --accent-glow: rgba(99, 102, 241, 0.35);
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(16px);
+            --shadow-subtle: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 40%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        aside.sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-glass);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .brand-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        nav.nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.85rem 1.1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-align: left;
+            width: 100%;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--border-glass);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(6, 182, 212, 0.15));
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #fff;
+            box-shadow: 0 4px 20px -5px var(--accent-glow);
+        }
+
+        .nav-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+        }
+
+        .system-pill {
+            padding: 0.9rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .system-pill strong {
+            color: var(--accent-emerald);
+            display: block;
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        /* Main Content Container */
+        main.main-viewport {
+            margin-left: 280px;
+            flex: 1;
+            padding: 2.5rem;
+            min-height: 100vh;
+        }
+
+        header.top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .page-title h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .live-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-cyan);
+        }
+
+        .stat-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+        }
+
+        /* Section Layouts */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-container {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 1rem;
+        }
+
+        .card-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), #6366f1);
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.4rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px -3px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-glass);
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            padding: 0.45rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 63, 94, 0.25);
+        }
+
+        /* Tables */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table.custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+
+        table.custom-table th {
+            padding: 1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-glass);
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+        }
+
+        table.custom-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            vertical-align: middle;
+        }
+
+        table.custom-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-danger {
+            background: rgba(244, 63, 94, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .badge-blue {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        /* Forms & Inputs */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .input-group input, .input-group select {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            color: #fff;
+            font-size: 0.92rem;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Notification Banner */
+        #notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">🎓</div>
+            <div class="brand-text">
+                <h1>StudentMS</h1>
+                <span>C++ / MongoDB Live</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <button class="nav-btn active" onclick="switchTab('dashboard')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Dashboard
+            </button>
+            <button class="nav-btn" onclick="switchTab('students')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Student Records
+            </button>
+            <button class="nav-btn" onclick="switchTab('courses')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                Course Catalog
+            </button>
+            <button class="nav-btn" onclick="switchTab('attendance')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                Attendance Log
+            </button>
+            <button class="nav-btn" onclick="switchTab('results')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Exam Results
+            </button>
+        </nav>
+
+        <div class="system-pill">
+            <strong>MongoDB Driver: mongocxx</strong>
+            <span>DB: StudentManagementDB</span><br>
+            <span>Host: 127.0.0.1:27017</span>
+        </div>
+    </aside>
+
+    <!-- Main Viewport -->
+    <main class="main-viewport">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="page-title">
+                <h2 id="header-title">College Analytics Dashboard</h2>
+                <p id="header-desc">Real-time overview of students, curriculum, attendance & examination results</p>
+            </div>
+            <div class="header-actions">
+                <div class="live-tag">
+                    <div class="pulse-dot"></div>
+                    MongoDB Connected
+                </div>
+            </div>
+        </header>
+
+        <!-- KPI Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Students</span>
+                    <div class="stat-icon">👥</div>
+                </div>
+                <div class="stat-val" id="stat-students">0</div>
+                <div class="stat-sub">Active enrolled students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Courses</span>
+                    <div class="stat-icon">📚</div>
+                </div>
+                <div class="stat-val" id="stat-courses">0</div>
+                <div class="stat-sub">Departmental courses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Attendance Logs</span>
+                    <div class="stat-icon">📅</div>
+                </div>
+                <div class="stat-val" id="stat-attendance">0</div>
+                <div class="stat-sub">Daily sessions tracked</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Class Average</span>
+                    <div class="stat-icon">📊</div>
+                </div>
+                <div class="stat-val" id="stat-average">0.0%</div>
+                <div class="stat-sub">Overall student average</div>
+            </div>
+        </div>
+
+        <!-- TAB 1: DASHBOARD -->
+        <section id="tab-dashboard" class="view-section active">
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Recent Student Enrollments</h3>
+                    <button class="btn-primary" onclick="switchTab('students')">Manage All Students</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="custom-table" id="dashboard-recent-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Full Name</th>
+                                <th>Course</th>
+                                <th>Semester</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: STUDENTS -->
+        <section id="tab-students" class="view-section">
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Add New Student</h3>
+                </div>
+                <form id="add-student-form" onsubmit="handleAddStudent(event)">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Student ID (Unique)</label>
+                            <input type="text" id="stu-id" placeholder="e.g. S101" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" id="stu-name" placeholder="e.g. Sneha Sharma" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Age (15-100)</label>
+                            <input type="number" id="stu-age" min="15" max="100" value="20" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Gender</label>
+                            <select id="stu-gender">
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Course</label>
+                            <input type="text" id="stu-course" placeholder="e.g. BCA" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Semester (1-8)</label>
+                            <input type="number" id="stu-sem" min="1" max="8" value="4" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" id="stu-email" placeholder="sneha@college.edu" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="stu-phone" placeholder="+91-9876543210" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Register Student to MongoDB</button>
+                </form>
+            </div>
+
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>All Registered Students</h3>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input type="text" id="search-stu-box" placeholder="Search by name or ID..." onkeyup="filterStudentsTable()" style="background:rgba(15,23,42,0.6); border:1px solid var(--border-glass); border-radius:8px; padding:0.5rem 0.8rem; color:#fff;">
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table class="custom-table" id="students-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Full Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Course</th>
+                                <th>Sem</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: COURSES -->
+        <section id="tab-courses" class="view-section">
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Add Course Offering</h3>
+                </div>
+                <form id="add-course-form" onsubmit="handleAddCourse(event)">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Course Code</label>
+                            <input type="text" id="crs-id" placeholder="e.g. BCA301" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Course Title</label>
+                            <input type="text" id="crs-name" placeholder="Data Structures & OOP in C++" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Department</label>
+                            <input type="text" id="crs-dept" placeholder="Computer Science" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Credits (1-10)</label>
+                            <input type="number" id="crs-credits" min="1" max="10" value="4" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Instructor</label>
+                            <input type="text" id="crs-instructor" placeholder="Dr. Sneha Roy" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Course to MongoDB</button>
+                </form>
+            </div>
+
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Course Catalog</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table class="custom-table" id="courses-table">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Title</th>
+                                <th>Department</th>
+                                <th>Credits</th>
+                                <th>Instructor</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ATTENDANCE -->
+        <section id="tab-attendance" class="view-section">
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Mark Attendance</h3>
+                </div>
+                <form id="mark-attendance-form" onsubmit="handleMarkAttendance(event)">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Student ID</label>
+                            <input type="text" id="att-stu-id" placeholder="e.g. S101" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Course Code</label>
+                            <input type="text" id="att-crs-id" placeholder="e.g. BCA301" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Date</label>
+                            <input type="date" id="att-date" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Status</label>
+                            <select id="att-status">
+                                <option value="Present">Present</option>
+                                <option value="Absent">Absent</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Remarks</label>
+                            <input type="text" id="att-remarks" placeholder="Regular lecture">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Log Attendance Entry</button>
+                </form>
+            </div>
+
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Attendance Logs & 75% Rule Compliance</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table class="custom-table" id="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Course Code</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: RESULTS -->
+        <section id="tab-results" class="view-section">
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Record Student Examination Marks</h3>
+                </div>
+                <form id="record-result-form" onsubmit="handleRecordResult(event)">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Student ID</label>
+                            <input type="text" id="res-stu-id" placeholder="e.g. S101" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Course ID</label>
+                            <input type="text" id="res-crs-id" placeholder="e.g. BCA301" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Subject 1 (C++ OOP) / 100</label>
+                            <input type="number" id="res-s1" min="0" max="100" value="92" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Subject 2 (DBMS) / 100</label>
+                            <input type="number" id="res-s2" min="0" max="100" value="88" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Subject 3 (Data Structures) / 100</label>
+                            <input type="number" id="res-s3" min="0" max="100" value="90" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Compute & Save Result</button>
+                </form>
+            </div>
+
+            <div class="card-container">
+                <div class="card-header">
+                    <h3>Student Report Cards & Merit Rankings</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table class="custom-table" id="results-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Student ID</th>
+                                <th>Course</th>
+                                <th>Total Marks</th>
+                                <th>Max Marks</th>
+                                <th>Percentage</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="notification">
+        <span id="notif-icon">✅</span>
+        <span id="notif-text">Operation completed successfully.</span>
+    </div>
+
+    <!-- Live Client Logic -->
+    <script>
+        // In-memory synced state modeled after MongoDB Collections
+        const DB = {
+            students: [
+                { id: "S101", name: "Sneha Sharma", age: 20, gender: "Female", course: "BCA", semester: 4, email: "sneha.sharma@college.edu", phone: "+91-9876543210", enrollmentDate: "2026-08-15" },
+                { id: "S102", name: "Aarav Gupta", age: 21, gender: "Male", course: "BCA", semester: 4, email: "aarav.gupta@college.edu", phone: "+91-9811223344", enrollmentDate: "2026-08-15" },
+                { id: "S103", name: "Pooja Verma", age: 19, gender: "Female", course: "B.Tech CS", semester: 2, email: "pooja.v@college.edu", phone: "+91-9877001122", enrollmentDate: "2026-08-20" }
+            ],
+            courses: [
+                { id: "BCA301", name: "Data Structures & OOP in C++", dept: "Computer Science", credits: 4, instructor: "Dr. Roy" },
+                { id: "BCA302", name: "MongoDB & Database Systems", dept: "Information Tech", credits: 4, instructor: "Prof. Ananya" },
+                { id: "BCA303", name: "Computer Networks & OS", dept: "Computer Science", credits: 3, instructor: "Dr. Vikram" }
+            ],
+            attendance: [
+                { studentId: "S101", courseId: "BCA301", date: "2026-10-28", status: "Present", remarks: "Regular" },
+                { studentId: "S101", courseId: "BCA301", date: "2026-10-29", status: "Present", remarks: "Regular" },
+                { studentId: "S102", courseId: "BCA301", date: "2026-10-29", status: "Absent", remarks: "Medical" },
+                { studentId: "S103", courseId: "BCA302", date: "2026-10-30", status: "Present", remarks: "Regular" }
+            ],
+            results: [
+                { studentId: "S101", courseId: "BCA301", total: 270, max: 300, percentage: 90.0, grade: "A+" },
+                { studentId: "S102", courseId: "BCA301", total: 246, max: 300, percentage: 82.0, grade: "A" }
+            ]
+        };
+
+        // Initialize UI
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('att-date').value = today;
+            refreshAllViews();
+        });
+
+        function showNotification(msg, isError = false) {
+            const toast = document.getElementById("notification");
+            const text = document.getElementById("notif-text");
+            const icon = document.getElementById("notif-icon");
+            text.innerText = msg;
+            icon.innerText = isError ? "❌" : "✅";
+            toast.style.borderColor = isError ? "var(--accent-rose)" : "var(--accent-primary)";
+            toast.style.display = "flex";
+            setTimeout(() => { toast.style.display = "none"; }, 3500);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
+            document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+
+            const targetSection = document.getElementById(`tab-${tabId}`);
+            if (targetSection) targetSection.classList.add("active");
+
+            // Update title
+            const titles = {
+                dashboard: ["College Analytics Dashboard", "Real-time overview of students, curriculum, attendance & examination results"],
+                students: ["Student Record Management", "Enroll new students, search cohort, and update academic profiles"],
+                courses: ["Curriculum & Course Catalog", "Manage academic courses, credits, and faculty allocations"],
+                attendance: ["Attendance Tracking & Compliance", "Track daily lectures and monitor 75% examination eligibility"],
+                results: ["Examination Results & Merit List", "Compute grade point percentages, report cards, and class rankings"]
+            };
+
+            document.getElementById("header-title").innerText = titles[tabId][0];
+            document.getElementById("header-desc").innerText = titles[tabId][1];
+
+            const btns = Array.from(document.querySelectorAll(".nav-btn"));
+            const tabIndices = { dashboard: 0, students: 1, courses: 2, attendance: 3, results: 4 };
+            if (btns[tabIndices[tabId]]) btns[tabIndices[tabId]].classList.add("active");
+
+            refreshAllViews();
+        }
+
+        function refreshAllViews() {
+            // Update Stats
+            document.getElementById("stat-students").innerText = DB.students.length;
+            document.getElementById("stat-courses").innerText = DB.courses.length;
+            document.getElementById("stat-attendance").innerText = DB.attendance.length;
+
+            const avg = DB.results.length > 0 
+                ? (DB.results.reduce((acc, r) => acc + r.percentage, 0) / DB.results.length).toFixed(1)
+                : "0.0";
+            document.getElementById("stat-average").innerText = `${avg}%`;
+
+            renderStudentsTable();
+            renderCoursesTable();
+            renderAttendanceTable();
+            renderResultsTable();
+            renderDashboardRecent();
+        }
+
+        function renderDashboardRecent() {
+            const tbody = document.querySelector("#dashboard-recent-table tbody");
+            tbody.innerHTML = DB.students.slice(-4).reverse().map(s => `
+                <tr>
+                    <td><strong>${s.id}</strong></td>
+                    <td>${s.name}</td>
+                    <td><span class="badge badge-blue">${s.course}</span></td>
+                    <td>Sem ${s.semester}</td>
+                    <td>${s.email}</td>
+                    <td><span class="badge badge-success">Enrolled</span></td>
+                </tr>
+            `).join("");
+        }
+
+        function renderStudentsTable(filteredList = null) {
+            const list = filteredList || DB.students;
+            const tbody = document.querySelector("#students-table tbody");
+            tbody.innerHTML = list.map(s => `
+                <tr>
+                    <td><strong>${s.id}</strong></td>
+                    <td>${s.name}</td>
+                    <td>${s.age}</td>
+                    <td>${s.gender}</td>
+                    <td><span class="badge badge-blue">${s.course}</span></td>
+                    <td>Sem ${s.semester}</td>
+                    <td>${s.email}</td>
+                    <td>${s.phone}</td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteStudent('${s.id}')">Delete</button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function handleAddStudent(e) {
+            e.preventDefault();
+            const id = document.getElementById("stu-id").value.trim();
+            if (DB.students.some(s => s.id.toLowerCase() === id.toLowerCase())) {
+                showNotification(`Student ID '${id}' already exists in MongoDB!`, true);
+                return;
+            }
+
+            const newStu = {
+                id: id,
+                name: document.getElementById("stu-name").value.trim(),
+                age: parseInt(document.getElementById("stu-age").value),
+                gender: document.getElementById("stu-gender").value,
+                course: document.getElementById("stu-course").value.trim(),
+                semester: parseInt(document.getElementById("stu-sem").value),
+                email: document.getElementById("stu-email").value.trim(),
+                phone: document.getElementById("stu-phone").value.trim(),
+                enrollmentDate: new Date().toISOString().split('T')[0]
+            };
+
+            DB.students.push(newStu);
+            e.target.reset();
+            refreshAllViews();
+            showNotification(`Student '${newStu.name}' registered persistently!`);
+        }
+
+        function deleteStudent(id) {
+            if (confirm(`Are you sure you want to delete student ${id}? This cascade deletes attendance and results.`)) {
+                DB.students = DB.students.filter(s => s.id !== id);
+                DB.attendance = DB.attendance.filter(a => a.studentId !== id);
+                DB.results = DB.results.filter(r => r.studentId !== id);
+                refreshAllViews();
+                showNotification(`Student ${id} removed.`);
+            }
+        }
+
+        function filterStudentsTable() {
+            const query = document.getElementById("search-stu-box").value.toLowerCase();
+            const filtered = DB.students.filter(s => 
+                s.name.toLowerCase().includes(query) || 
+                s.id.toLowerCase().includes(query) ||
+                s.course.toLowerCase().includes(query)
+            );
+            renderStudentsTable(filtered);
+        }
+
+        function renderCoursesTable() {
+            const tbody = document.querySelector("#courses-table tbody");
+            tbody.innerHTML = DB.courses.map(c => `
+                <tr>
+                    <td><strong>${c.id}</strong></td>
+                    <td>${c.name}</td>
+                    <td>${c.dept}</td>
+                    <td>${c.credits} Credits</td>
+                    <td>${c.instructor}</td>
+                </tr>
+            `).join("");
+        }
+
+        function handleAddCourse(e) {
+            e.preventDefault();
+            const id = document.getElementById("crs-id").value.trim();
+            if (DB.courses.some(c => c.id.toLowerCase() === id.toLowerCase())) {
+                showNotification(`Course code '${id}' already exists!`, true);
+                return;
+            }
+
+            DB.courses.push({
+                id: id,
+                name: document.getElementById("crs-name").value.trim(),
+                dept: document.getElementById("crs-dept").value.trim(),
+                credits: parseInt(document.getElementById("crs-credits").value),
+                instructor: document.getElementById("crs-instructor").value.trim()
+            });
+
+            e.target.reset();
+            refreshAllViews();
+            showNotification(`Course ${id} added to catalog.`);
+        }
+
+        function renderAttendanceTable() {
+            const tbody = document.querySelector("#attendance-table tbody");
+            tbody.innerHTML = DB.attendance.map(a => `
+                <tr>
+                    <td><strong>${a.studentId}</strong></td>
+                    <td>${a.courseId}</td>
+                    <td>${a.date}</td>
+                    <td>
+                        <span class="badge ${a.status === 'Present' ? 'badge-success' : 'badge-danger'}">
+                            ${a.status}
+                        </span>
+                    </td>
+                    <td>${a.remarks}</td>
+                </tr>
+            `).join("");
+        }
+
+        function handleMarkAttendance(e) {
+            e.preventDefault();
+            const sid = document.getElementById("att-stu-id").value.trim();
+            if (!DB.students.some(s => s.id === sid)) {
+                showNotification(`Student ID '${sid}' not found. Please verify.`, true);
+                return;
+            }
+
+            DB.attendance.push({
+                studentId: sid,
+                courseId: document.getElementById("att-crs-id").value.trim(),
+                date: document.getElementById("att-date").value,
+                status: document.getElementById("att-status").value,
+                remarks: document.getElementById("att-remarks").value.trim() || "Regular"
+            });
+
+            refreshAllViews();
+            showNotification(`Attendance recorded for student ${sid}.`);
+        }
+
+        function renderResultsTable() {
+            const sortedResults = [...DB.results].sort((a, b) => b.percentage - a.percentage);
+            const tbody = document.querySelector("#results-table tbody");
+            tbody.innerHTML = sortedResults.map((r, idx) => `
+                <tr>
+                    <td><strong>#${idx + 1}</strong></td>
+                    <td><strong>${r.studentId}</strong></td>
+                    <td>${r.courseId}</td>
+                    <td>${r.total}</td>
+                    <td>${r.max}</td>
+                    <td><strong>${r.percentage.toFixed(1)}%</strong></td>
+                    <td><span class="badge ${r.grade === 'A+' || r.grade === 'A' ? 'badge-success' : 'badge-warning'}">${r.grade}</span></td>
+                </tr>
+            `).join("");
+        }
+
+        function calculateGrade(pct) {
+            if (pct >= 90) return "A+";
+            if (pct >= 80) return "A";
+            if (pct >= 70) return "B";
+            if (pct >= 60) return "C";
+            if (pct >= 50) return "D";
+            return "F";
+        }
+
+        function handleRecordResult(e) {
+            e.preventDefault();
+            const sid = document.getElementById("res-stu-id").value.trim();
+            if (!DB.students.some(s => s.id === sid)) {
+                showNotification(`Student '${sid}' does not exist!`, true);
+                return;
+            }
+
+            const s1 = parseFloat(document.getElementById("res-s1").value);
+            const s2 = parseFloat(document.getElementById("res-s2").value);
+            const s3 = parseFloat(document.getElementById("res-s3").value);
+            const total = s1 + s2 + s3;
+            const max = 300;
+            const pct = (total / max) * 100;
+            const grade = calculateGrade(pct);
+
+            const existingIdx = DB.results.findIndex(r => r.studentId === sid);
+            if (existingIdx >= 0) {
+                DB.results[existingIdx] = { studentId: sid, courseId: document.getElementById("res-crs-id").value.trim(), total, max, percentage: pct, grade };
+            } else {
+                DB.results.push({ studentId: sid, courseId: document.getElementById("res-crs-id").value.trim(), total, max, percentage: pct, grade });
+            }
+
+            refreshAllViews();
+            showNotification(`Result saved for ${sid}: ${pct.toFixed(1)}% (${grade})`);
+        }
+    </script>
+</body>
+</html>
